@@ -6,8 +6,8 @@ public class Player : MonoBehaviour
 {
     public ObjectPool objectPool;
 
-    private const float max_X = 2.18f;
-    private const float min_X = -2.18f;
+    private const float max_X = 4f;
+    private const float min_X = -4f;
 
     private float speed = 4f;
     private float cooldown = 0.5f;
