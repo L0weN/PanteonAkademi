@@ -101,8 +101,8 @@ public class AlienMaster : MonoBehaviour
     {
         Instantiate(motherShipPrefab, motherShipSpawnPos, Quaternion.identity);
         motherShipTimer = Random.Range(MOTHERSHIP_MIN, MOTHERSHIP_MAX);
-
     }
+
 
     float GetMoveSpeed()
     {

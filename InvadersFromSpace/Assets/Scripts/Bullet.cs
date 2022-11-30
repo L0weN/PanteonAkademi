@@ -12,6 +12,15 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("Alien"))
+        {
+            gameObject.SetActive(false);
+            collision.gameObject.GetComponent<Alien>().Kill();
+        }
+        if (collision.gameObject.CompareTag("EnemyBullet"))
+        {
+            collision.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+        }
     }
 }

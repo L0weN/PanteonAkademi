@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MotherShip : MonoBehaviour
 {
-    public int scoreValue;
     private const float MAX_LEFT = -5f, MIN_LEFT = 5f;
     private float speed = 5f;
     void Update()

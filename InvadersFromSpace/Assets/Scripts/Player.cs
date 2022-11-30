@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public ObjectPool objectPool;
-
+    public ShipStats shipstats;
     private const float max_X = 4f;
     private const float min_X = -4f;
 
@@ -13,6 +13,13 @@ public class Player : MonoBehaviour
     private float cooldown = 0.5f;
     private bool isShooting;
 
+    private Vector2 offScreenPos = Vector2.zero;
+    private Vector2 startPos = Vector2.zero;
+
+    private void Start()
+    {
+        shipstats.currentHealth = shipstats.maxHealth;
+    }
     void Update()
     {
 #if UNITY_EDITOR    
@@ -41,5 +48,40 @@ public class Player : MonoBehaviour
         isShooting = false;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == ("EnemyBullet"))
+        {
+            collision.gameObject.SetActive(false);
+            TakeDamage();
+        }
+    }
+
+    public void TakeDamage()
+    {
+        shipstats.currentHealth--;
+        if (shipstats.currentHealth <= 0) 
+        {
+            shipstats.currentLifes--;
+            if (shipstats.currentLifes <= 0)
+            {
+                Debug.Log("Game Over!");
+            }
+            else
+            {
+                StartCoroutine(Respawn());
+                Debug.Log("Respawn");
+            }
+        }
+        
+    }
+
+    public IEnumerator Respawn()
+    {
+        transform.position = offScreenPos;
+        yield return new WaitForSeconds(2);
+        shipstats.currentHealth = shipstats.maxHealth;
+        transform.position = startPos;
+    }
     
 }
