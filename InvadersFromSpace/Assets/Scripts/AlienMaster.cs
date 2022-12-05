@@ -20,7 +20,7 @@ public class AlienMaster : MonoBehaviour
     public ObjectPool objectPool;
 
     public GameObject motherShipPrefab;
-    private Vector3 motherShipSpawnPos = new Vector3(3.72f, 7.45f, 0);
+    private Vector3 motherShipSpawnPos = new Vector3(3.72f, 4.40f, 0);
     private float motherShipTimer = 1f;
     private const float MOTHERSHIP_MIN = 15F;
     private const float MOTHERSHIP_MAX = 60F;
@@ -29,6 +29,7 @@ public class AlienMaster : MonoBehaviour
     public static List<GameObject> allAliens = new List<GameObject>();
 
     private bool movingRight;
+
     void Start()
     {
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Alien"))
@@ -46,7 +47,10 @@ public class AlienMaster : MonoBehaviour
         }
         if(shootTimer<= 0)
         {
-            Shoot();
+            if(allAliens.Count > 0)
+            {
+                Shoot();
+            }
         }
         if (motherShipTimer <= 0)
         {

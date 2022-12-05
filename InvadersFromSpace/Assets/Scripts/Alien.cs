@@ -12,5 +12,6 @@ public class Alien : MonoBehaviour
         AlienMaster.allAliens.Remove(gameObject);
         Instantiate(explosion, transform.position, Quaternion.identity);
         gameObject.SetActive(false);
+        UIManager.UpdateScore(scoreVal);
     }
 }

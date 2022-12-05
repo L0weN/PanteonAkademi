@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MotherShip : MonoBehaviour
 {
+    private int scoreVal;
     private const float MAX_LEFT = -5f, MIN_LEFT = 5f;
     private float speed = 5f;
     void Update()
@@ -17,6 +18,11 @@ public class MotherShip : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("FriendlyBullet"))
+        {
+            UIManager.UpdateScore(scoreVal);
+            collision.gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
     }
 }
