@@ -4,25 +4,30 @@ using UnityEngine;
 
 public class MotherShip : MonoBehaviour
 {
-    private int scoreVal;
-    private const float MAX_LEFT = -5f, MIN_LEFT = 5f;
-    private float speed = 5f;
+    public int scoreValue;
+
+    private const float MAX_LEFT = -5;
+    private float speed = 5;
+
+    // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector2.left * speed * Time.deltaTime);
-        if (transform.position.x <= MAX_LEFT) 
-        {
+        transform.Translate(Vector2.left * Time.deltaTime * speed);
+
+		if (transform.position.x <= MAX_LEFT)
+		{
             Destroy(gameObject);
-        }
+		}
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("FriendlyBullet"))
-        {
-            UIManager.UpdateScore(scoreVal);
-            collision.gameObject.SetActive(false);
-            Destroy(gameObject);
-        }
-    }
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (collision.gameObject.CompareTag("FriendlyBullet"))
+		{
+			UIManager.UpdateScore(scoreValue);
+			collision.gameObject.SetActive(false);
+			Destroy(gameObject);
+		}
+	}
+
 }

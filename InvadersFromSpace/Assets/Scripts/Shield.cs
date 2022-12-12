@@ -13,25 +13,21 @@ public class Shield : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
-    {
-                
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("EnemyBullet") || collision.gameObject.CompareTag("FriendlyBullet"))
-        {
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (collision.gameObject.CompareTag("EnemyBullet") || collision.gameObject.CompareTag("FriendlyBullet"))
+		{
             collision.gameObject.SetActive(false);
             health--;
-            if (health <= 0)
-            {
+			if (health <= 0)
+			{
                 Destroy(gameObject);
-            }
-            else
-            {
-                sr.sprite = states[health - 1];
-            }
-        }
-    }
+			}
+			else
+			{
+				sr.sprite = states[health - 1];
+			}
+		}
+	}
+
 }

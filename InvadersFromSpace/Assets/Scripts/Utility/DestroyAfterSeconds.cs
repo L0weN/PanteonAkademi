@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class DestroyAfterSeconds : MonoBehaviour
 {
-    private void OnBecameInvisible()
+    public float seconds;
+    
+    void Start()
     {
-        this.gameObject.SetActive(false);
+        Destroy(gameObject, seconds);
     }
+
+    
 }
