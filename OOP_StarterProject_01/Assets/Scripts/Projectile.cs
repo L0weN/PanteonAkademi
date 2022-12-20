@@ -8,8 +8,9 @@ public class Projectile : MonoBehaviour
     public float speed = 10;
     public Rigidbody2D rb2d;
     public float deathDelay = 5;
-    
-    
+
+
+    // Start is called before the first frame update
     void Start()
     {
         rb2d.velocity = transform.up * speed;

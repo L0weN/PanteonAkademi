@@ -3,16 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using WeaponSystem;
+using PA.WeaponSystem;
 
 public class Player : MonoBehaviour
 {
     public float speed = 2;
 
-
-    
     public Transform playerShip;
-    
+
     public ScreenBounds screenBounds;
 
     public int health = 3;
@@ -34,7 +32,9 @@ public class Player : MonoBehaviour
     public InGameMenu loseScreen;
     public Button menuButton;
 
-    [SerializeField] private Weapon weapon;
+    [SerializeField]
+    private Weapon weapon;
+
 
     private void Awake()
     {
@@ -56,15 +56,21 @@ public class Player : MonoBehaviour
         //shooting
         if (Input.GetKey(KeyCode.Space))
         {
-            /*if(shootingDelayed == false)
+            /*
+            if(shootingDelayed == false)
             {
                 shootingDelayed = true;
                 gunAudio.Play();
                 GameObject p = Instantiate(projectile, transform.position, Quaternion.identity);
                 StartCoroutine(DelayShooting());
-            } */
+            }
+            */
             weapon.PerformAttack();
         }
+		if (Input.GetKey(KeyCode.Q))
+		{
+            weapon.SwapWeapon();
+		}
     }
 
     private void FixedUpdate()
@@ -76,7 +82,7 @@ public class Player : MonoBehaviour
             //transform.Translate(tempPosition - transform.position);
         }
     }
-    
+
 
     public void ReduceLives()
     {

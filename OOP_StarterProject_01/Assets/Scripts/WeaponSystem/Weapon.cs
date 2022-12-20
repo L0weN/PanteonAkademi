@@ -2,32 +2,53 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WeaponSystem
+namespace PA.WeaponSystem
 {
-    public class Weapon : MonoBehaviour
-    {
-        public float shootingDelay = 0.2f;
-        public bool shootingDelayed;
+	public class Weapon : MonoBehaviour
+	{
+		[SerializeField]
+		List<AttackPatternSO> weapons;
+		private int index = 0;
+		[SerializeField]
+		private AudioClip weaponSwap;
 
-        public GameObject projectile;
+		public bool shootingDelayed;
 
-        public AudioSource gunAudio;
+		[SerializeField]
+		private AttackPatternSO attackPattern;
 
-        public void PerformAttack()
-        {
-            if (shootingDelayed == false)
-            {
-                shootingDelayed = true;
-                gunAudio.Play();
-                GameObject p = Instantiate(projectile, transform.position, Quaternion.identity);
-                StartCoroutine(DelayShooting());
-            }
-        }
+		[SerializeField]
+		private Transform shootingStartPoint;
 
-        private IEnumerator DelayShooting()
-        {
-            yield return new WaitForSeconds(shootingDelay);
-            shootingDelayed = false;
-        }
-    }
+		public GameObject projectile;
+		public AudioSource gunAudio;
+
+		public void SwapWeapon()
+		{
+			index++;
+			index = index >= weapons.Count ? 0 : index;
+			attackPattern = weapons[index];
+			gunAudio.PlayOneShot(weaponSwap);
+		}
+
+		public void PerformAttack()
+		{
+			if (shootingDelayed == false)
+			{
+				shootingDelayed = true;
+				gunAudio.PlayOneShot(attackPattern.AudioSFX);
+
+				//GameObject p = Instantiate(projectile, transform.position, Quaternion.identity);
+				attackPattern.Perform(shootingStartPoint);
+
+				StartCoroutine(DelayShooting());
+			}
+		}
+
+		private IEnumerator DelayShooting()
+		{
+			yield return new WaitForSeconds(attackPattern.AttackDelay);
+			shootingDelayed = false;
+		}
+	}
 }

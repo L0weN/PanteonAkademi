@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Background : MonoBehaviour
 {
-    public Vector2 velocity = new Vector2(0, 1);
+    public Vector2 velocity = new Vector2(0,1);
 
     Material material;
 
