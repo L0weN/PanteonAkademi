@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using PA.WeaponSystem;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHittable
 {
     public float speed = 2;
 
@@ -113,42 +113,37 @@ public class Player : MonoBehaviour
         }
     }
 
+	private void GetHitFeedback()
+	{
+		hitSource.PlayOneShot(hitClip);
+	}
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<ScreenBounds>() || collision.GetComponent<BottomCollider>())
-            return;
+	private void Death()
+	{
+		isAlive = false;
+		hitSource.PlayOneShot(deathClip);
+		GetComponent<Collider2D>().enabled = false;
+		GetComponentInChildren<SpriteRenderer>().enabled = false;
+		StartCoroutine(DestroyCoroutine());
+	}
 
-        //Debug.Log(collision.name);
-        
-        health--;
-        for (int i = 0; i < lives.Count; i++)
-        {
-            if (i >= health)
-            {
-                lives[i].color = Color.black;
-            }
-            else
-            {
-                lives[i].color = Color.white;
-            }
-            
-        }
-        if (health <= 0)
-        {
-            isAlive = false;
-            hitSource.PlayOneShot(deathClip);
-            GetComponent<Collider2D>().enabled = false;
-            GetComponentInChildren<SpriteRenderer>().enabled = false;
-            StartCoroutine(DestroyCoroutine());
-        } 
-        else
-        {
-            hitSource.PlayOneShot(hitClip);
-        }
-    }
+	private void UpdateUI()
+	{
+		for (int i = 0; i < lives.Count; i++)
+		{
+			if (i >= health)
+			{
+				lives[i].color = Color.black;
+			}
+			else
+			{
+				lives[i].color = Color.white;
+			}
 
-    private IEnumerator DestroyCoroutine()
+		}
+	}
+
+	private IEnumerator DestroyCoroutine()
     {
         Instantiate(explosionFX, transform.position, Quaternion.identity); ;
         yield return new WaitForSeconds(deathClip.length);
@@ -157,4 +152,17 @@ public class Player : MonoBehaviour
         menuButton.interactable = false;
     }
 
+	public void GetHit(int damageValue, GameObject sender)
+	{
+        health -= damageValue;
+        UpdateUI();
+		if (health <= 0)
+		{
+            Death();
+		}
+		else
+		{
+            GetHitFeedback();
+		}
+	}
 }
