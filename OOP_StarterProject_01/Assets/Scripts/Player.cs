@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using PA.WeaponSystem;
+using PA.HealthSystem;
 
-public class Player : MonoBehaviour, IHittable
+public class Player : MonoBehaviour
 {
     public float speed = 2;
 
@@ -13,7 +14,7 @@ public class Player : MonoBehaviour, IHittable
 
     public ScreenBounds screenBounds;
 
-    public int health = 3;
+    public int initialHealthValue = 3;
 
     [SerializeField]
     private Transform liveImagesUIParent;
@@ -35,8 +36,31 @@ public class Player : MonoBehaviour, IHittable
     [SerializeField]
     private Weapon weapon;
 
+    [SerializeField]
+    private Health health;
 
-    private void Awake()
+	private void OnEnable()
+	{
+		if(health == null)
+		{
+            health = GetComponent<Health>();
+            health.InitializeHealth(initialHealthValue);
+		}
+        health.OnDeath.AddListener(Death);
+        health.OnDeath.AddListener(UpdateUI);
+        health.OnHit.AddListener(UpdateUI);
+        health.OnHit.AddListener(GetHitFeedback);
+	}
+
+	private void OnDisable()
+	{
+        health.OnDeath.RemoveListener(Death);
+        health.OnDeath.RemoveListener(UpdateUI);
+        health.OnHit.RemoveListener(UpdateUI);
+        health.OnHit.RemoveListener(GetHitFeedback);
+	}
+
+	private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
 
@@ -51,20 +75,14 @@ public class Player : MonoBehaviour, IHittable
         //get input and move
         Vector2 input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         input.Normalize();
-        movementVector = speed * input;  
+        movementVector = speed * input;
+
+        if (isAlive == false)
+            return;
 
         //shooting
         if (Input.GetKey(KeyCode.Space))
         {
-            /*
-            if(shootingDelayed == false)
-            {
-                shootingDelayed = true;
-                gunAudio.Play();
-                GameObject p = Instantiate(projectile, transform.position, Quaternion.identity);
-                StartCoroutine(DelayShooting());
-            }
-            */
             weapon.PerformAttack();
         }
 		if (Input.GetKey(KeyCode.Q))
@@ -86,10 +104,10 @@ public class Player : MonoBehaviour, IHittable
 
     public void ReduceLives()
     {
-        health--;
+        initialHealthValue--;
         for (int i = 0; i < lives.Count; i++)
         {
-            if (i >= health)
+            if (i >= initialHealthValue)
             {
                 lives[i].color = Color.black;
             }
@@ -99,7 +117,7 @@ public class Player : MonoBehaviour, IHittable
             }
 
         }
-        if (health <= 0)
+        if (initialHealthValue <= 0)
         {
             isAlive = false;
             hitSource.PlayOneShot(deathClip);
@@ -131,7 +149,7 @@ public class Player : MonoBehaviour, IHittable
 	{
 		for (int i = 0; i < lives.Count; i++)
 		{
-			if (i >= health)
+			if (i >= health.CurrentHealth)
 			{
 				lives[i].color = Color.black;
 			}
@@ -152,17 +170,5 @@ public class Player : MonoBehaviour, IHittable
         menuButton.interactable = false;
     }
 
-	public void GetHit(int damageValue, GameObject sender)
-	{
-        health -= damageValue;
-        UpdateUI();
-		if (health <= 0)
-		{
-            Death();
-		}
-		else
-		{
-            GetHitFeedback();
-		}
-	}
+	
 }
